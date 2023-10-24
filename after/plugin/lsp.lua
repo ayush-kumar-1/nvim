@@ -1,4 +1,26 @@
 local lsp = require('lsp-zero').preset({})
+local configs = require('lspconfig/configs')
+local lspconfig = require('lspconfig')
+
+-- vim.tbl_deep_extend('keep', lspconfig, {
+--      mojo_lsp_server = {
+--          cmd = {'mojo-lsp-server', '--stdio'},
+--          filetypes = {'mojo'},
+--          name = 'mojo-lsp-server',
+--      }
+--  })
+-- 
+-- 
+-- configs.mojo_lsp_server = {
+--          default_config = {
+--              cmd = {'mojo-lsp-server', '--stdio'};
+--              filetypes = {'mojo'};
+--              root_dir = function(fname)
+--                  return lsp.util.find_git_ancestor
+--              end;
+--              settings = {};
+--          };
+--      }
 
 lsp.on_attach(function(client, bufnr)
     -- see :help lsp-zero-keybindings
@@ -6,6 +28,7 @@ lsp.on_attach(function(client, bufnr)
     lsp.default_keymaps({ buffer = bufnr })
     lsp.buffer_autoformat()
 end)
+
 lsp.ensure_installed({
     'ruff_lsp',
     'rust_analyzer',
@@ -20,7 +43,27 @@ lsp.ensure_installed({
 -- (Optional) Configure lua language server for neovim
 -- Fix Undefined global 'vim'
 lsp.nvim_workspace()
+-- lsp.setup_servers({"mojo_lsp_server"})
 
+lsp.format_on_save({
+    format_opts = {
+        async = false, 
+        timeout_ms = 10000,
+    },
+    servers = {
+        ["ruff_lsp"] = {"python"}
+    }
+})
+
+
+require("lspconfig").ruff_lsp.setup{
+    on_attach = on_attach,
+    init_options = {
+        settings = {
+            args = {"--line-length 120"}
+        }
+    }
+}
 
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }

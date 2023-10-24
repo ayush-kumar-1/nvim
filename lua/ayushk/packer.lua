@@ -8,7 +8,6 @@ return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.2',
-        -- or                            , branch = '0.1.x',
         requires = { { 'nvim-lua/plenary.nvim' } }
     }
     use({
@@ -20,7 +19,6 @@ return require('packer').startup(function(use)
     })
 
     use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
-
     use('theprimeagen/harpoon')
     use('tpope/vim-fugitive')
     use {
@@ -38,25 +36,51 @@ return require('packer').startup(function(use)
             { 'L3MON4D3/LuaSnip' },     -- Required
         }
     }
-    use('github/copilot.vim')
-    use({
-        "andrewferrier/wrapping.nvim",
-        config = function()
-            require("wrapping").setup()
-        end})use({
-        "epwalsh/obsidian.nvim",
-        requires = {
-            -- Required.
-            "nvim-lua/plenary.nvim",
+   use('github/copilot.vim')
+   use({'vimwiki/vimwiki', config = function()
+       vim.g.vimwiki_list = {
+           {
+               path = '~/Dropbox/Notes',
+               syntax = 'markdown',
+               ext = '.md',
+           }
+       }
+   end})
 
-            -- see below for full list of optional dependencies 👇
+   use({
+       "andrewferrier/wrapping.nvim",
+       config = function()
+           require("wrapping").setup()
+       end})
+       use({
+           "epwalsh/obsidian.nvim",
+           requires = {
+               -- Required.
+               "nvim-lua/plenary.nvim",
+
+               -- see below for full list of optional dependencies 👇
+           },
+           config = function()
+               require("obsidian").setup({
+                   dir = "~/Dropbox/Notes",
+
+                   -- see below for full list of options 👇
+               })
+           end,
+       })
+
+    use({
+        "quarto-dev/quarto-nvim",
+        requires = {
+            'jmbuhr/otter.nvim'
         },
         config = function()
-            require("obsidian").setup({
-                dir = "~/Dropbox/Notes",
-
+            require("quarto").setup({
                 -- see below for full list of options 👇
             })
         end,
     })
+
+    use({"Vigemus/iron.nvim"})
+
 end)
